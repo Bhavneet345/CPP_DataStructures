@@ -43,25 +43,26 @@ node *connectMidpoints(node *head)
     {
         return nullptr;
     }
-    node *midpoints = nullptr, *prev = nullptr, *temp1 = head, *temp2 = head -> next;
-    float midx, midy;
-    while(temp2 != nullptr)
+    node *midpoint = nullptr;
+    node *temp = head;
+    if(temp -> x == temp -> next -> x)
     {
-        if(temp2 -> x == temp1 -> x || temp2 -> y == temp1 -> y)
+        while(temp -> next != nullptr && temp -> x == temp -> next -> x)
         {
-            prev = temp2;
-            temp2 = temp2 -> next;
+            temp = temp -> next;
         }
-        else
-        {
-            break;
-        }
+        midpoint = new node(temp -> x, (temp -> y + head -> y) / 2);
     }
-    midx = (prev -> x + temp1 -> x) / 2;
-    midy = (prev -> y + temp1 -> y) / 2;
-    midpoints = new node(floorf(midx), floorf(midy));
-    midpoints -> next = connectMidpoints(prev);
-    return midpoints;
+    else if(temp -> y == temp -> next -> y)
+    {
+        while(temp -> next != nullptr && temp -> y == temp -> next -> y)
+        {
+            temp = temp -> next;
+        }
+        midpoint = new node((temp -> x + head -> x) / 2, temp -> y);
+    }
+    midpoint -> next = connectMidpoints(temp);
+    return midpoint;
 }
 
 void print(node *head)
