@@ -4,8 +4,8 @@ using namespace std;
 string findWinner(int x, int y, int n)
 {
    int *dp = new int[n + 1];
-   dp[0] = 1;
-   dp[1] = 0;
+   dp[0] = 0;
+   dp[1] = 1;
    for(int i = 2; i <= n; i++)
    {
        dp[i] = 0;
@@ -22,7 +22,7 @@ string findWinner(int x, int y, int n)
            dp[i] = 1;
        }
    }
-   if(dp[n] == 0)
+   if(dp[n] == 1)
    {
        return "Beerus";
    }
