@@ -1,75 +1,42 @@
 #include<iostream>
-#include<algorithm>
 #include<vector>
+#include<queue>
 using namespace std;
 
-void returnConnectedHelper(int **edges, int n, int sv, bool *visited)
-{
-    visited[sv] = true;
-    for(int i = 0; i < n; i++)
-    {
-        if(i == sv)
-        {
-            continue;
-        }
-        else if(edges[sv][i] == 1 && visited[i] == false)
-        {
-            returnConnectedHelper(edges, n, i, visited);
+void bfs(int row, int col, vector<vector<int> > &visited, vector<vector<char>>& grid){
+    queue<pair<int, int>> q;
+    q.push({row, col});
+    visited[row][col] = 1;
+    int m = grid.size(), n = grid[0].size();
+    vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    while(!q.empty()){
+        int i = q.front().first;
+        int j = q.front().second;
+        q.pop();
+        for (auto [dr, dc] : directions) {
+            int nr = row + dr;
+            int nc = col + dc;
+            if (nr >= 0 && nr < m && nc >= 0 && nc < n && grid[nr][nc] == '1' && visited[nr][nc] == 0) {
+                q.push({nr, nc});
+                visited[nr][nc] = 1;
+            }
         }
     }
     return;
 }
 
-int returnAllConnected(int **edges, int n)
-{
-    bool *visited = new bool[n];
-    for(int i = 0; i < n; i++)
-    {
-        visited[i] = false;
-    }
-    int count = 1;
-    returnConnectedHelper(edges, n, 0, visited);
-    for(int i = 0; i < n; i++)
-    {
-        if(!visited[i])
-        {
-            ++count;
-            returnConnectedHelper(edges, n, i, visited);
+int numIslands(vector<vector<char>>& grid){
+    int m = grid.size();
+    int n = grid[0].size();
+    vector<vector<int> > visited(m, vector<int>(n, 0));
+    int cnt = 0;
+    for(int i = 0; i < m; i++){
+        for(int j = 0; j < n; j++){
+            if(grid[i][j] == 1 && !visited[i][j]){
+                bfs(i, j, visited, grid);
+                cnt++;
+            }
         }
     }
-    return count;
-}
-
-int main()
-{
-    int n, e;
-    cin >> n >> e;
-    if(n == 0 || e == 0)
-    {
-        int count = 0;
-        for(int i = 0; i < n; i++)
-        {
-            ++count;
-        }
-        cout << count;
-        return 0;
-    }
-    int **edges = new int*[n];
-    for(int i = 0; i < n; i++)
-    {
-        edges[i] = new int[n];
-        for(int j = 0; j < n; j++)
-        {
-            edges[i][j] = 0;
-        }
-    }
-    for(int i = 0; i < e; i++)
-    {
-        int fv, sv;
-        cin >> fv >> sv;
-        edges[fv][sv] = 1;
-        edges[sv][fv] = 1;
-    }
-    cout << returnAllConnected(edges, n);
-    return 0;
+    return cnt;
 }
